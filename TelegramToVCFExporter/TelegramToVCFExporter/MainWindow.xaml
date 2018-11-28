@@ -24,7 +24,7 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <Label x:Name="lblHtml" VerticalAlignment="Center" Grid.Row="0" Content="html path:" Margin="3"></Label>
-            <TextBox x:Name="tbxHtml" Grid.Row="0" Grid.Column="1" Margin="3"></TextBox>
+            <TextBox x:Name="tbxHtml" Grid.Row="0" Padding="0"  TextWrapping="NoWrap"  IsReadOnly="True" Grid.Column="1" Margin="3"></TextBox>
             <Button x:Name="tbxBrowseHtml" Grid.Row="0" Grid.Column="2" Content="Browse..." Margin="3"></Button>
         </Grid>
         <Grid Grid.Row="1">
@@ -39,7 +39,7 @@
             </Grid.RowDefinitions>
 
             <Label x:Name="lblSavePath" Grid.Row="0" Grid.Column="0"  Content="Path to save:" Margin="3" VerticalAlignment="Center"></Label>
-            <TextBox x:Name="tbxSavePath" Grid.Row="0" Grid.Column="1" Margin="3"></TextBox>
+            <TextBox x:Name="tbxSavePath" Grid.Row="0" Grid.Column="1" Margin="3" Padding="0"  TextWrapping="NoWrap"   IsReadOnly="True" ></TextBox>
             <Button x:Name="tbxBrowseSavePath" Grid.Row="0" Grid.Column="3" Content="Browse..." Margin="3" ></Button>
         </Grid>
         <Grid Margin="3" Grid.Row="2">
