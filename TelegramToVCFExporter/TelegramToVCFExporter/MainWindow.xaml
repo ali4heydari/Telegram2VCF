@@ -1,0 +1,65 @@
+﻿<Window x:Class="TelegramToVCFExporter.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TelegramToVCFExporter"
+        mc:Ignorable="d"
+        Title="TelegramToVCF" ResizeMode="NoResize" SizeToContent="WidthAndHeight" MinHeight="200" MinWidth="650">
+    <Grid Margin="4">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="5*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Label x:Name="lblHtml" VerticalAlignment="Center" Grid.Row="0" Content="html path:" Margin="3"></Label>
+            <TextBox x:Name="tbxHtml" Grid.Row="0" Padding="0"  TextWrapping="NoWrap"  IsReadOnly="True" Grid.Column="1" Margin="3"></TextBox>
+            <Button x:Name="tbxBrowseHtml" Grid.Row="0" Grid.Column="2" Content="Browse..." Margin="3"></Button>
+        </Grid>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="5*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Label x:Name="lblSavePath" Grid.Row="0" Grid.Column="0"  Content="Path to save:" Margin="3" VerticalAlignment="Center"></Label>
+            <TextBox x:Name="tbxSavePath" Grid.Row="0" Grid.Column="1" Margin="3" Padding="0"  TextWrapping="NoWrap"   IsReadOnly="True" ></TextBox>
+            <Button x:Name="tbxBrowseSavePath" Grid.Row="0" Grid.Column="3" Content="Browse..." Margin="3" ></Button>
+        </Grid>
+        <Grid Margin="3" Grid.Row="2">
+
+            <DataGrid x:Name="dtaGrdContacts" MinHeight="300">
+
+            </DataGrid>
+        </Grid>
+        <Grid Grid.Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="4*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <ProgressBar x:Name="progressbar" Grid.Column="0" MinHeight="30" Margin="3"></ProgressBar>
+            <Button x:Name="btnCancel" Grid.Column="1" Margin="3" Content="Cancel"></Button>
+            <Button x:Name="btnExport" Grid.Column="2" Margin="3" Content="Export..."></Button>
+        </Grid>
+
+
+
+    </Grid>
+</Window>
