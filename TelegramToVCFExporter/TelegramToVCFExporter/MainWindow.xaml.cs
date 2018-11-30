@@ -125,6 +125,14 @@ namespace TelegramToVCFExporter
                             .Item1,
                         contactTuples[i]
                             .Item2));
+            Dispatcher.Invoke(new Action((() =>
+            {
+                dtaGrdContacts.ItemsSource = contacts.Select(c => new
+                {
+                    FirstAndLastName = c.FirstAndLastName,
+                    PhoneNumber = c.PhoneNumber,
+                }).ToList();
+            })));
 
             using (StreamWriter writer = new StreamWriter(this.PathToSave))
             {
@@ -132,7 +140,7 @@ namespace TelegramToVCFExporter
                 {
                     writer.Write(contacts[i].VCF);
                     writer.Write("\n");
-                    worker.ReportProgress((int) ((i * 1.0 / contacts.Count) * 100));
+                    worker.ReportProgress((int) (((i +1)* 1.0 / contacts.Count) * 100));
                 }
             }
         }

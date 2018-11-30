@@ -44,8 +44,8 @@
         </Grid>
         <Grid Margin="3" Grid.Row="2">
 
-            <DataGrid x:Name="dtaGrdContacts" MinHeight="300">
-
+            <DataGrid x:Name="dtaGrdContacts" Height="300" VerticalScrollBarVisibility="Auto">
+                
             </DataGrid>
         </Grid>
         <Grid Grid.Row="3">
