@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Media;
 using HtmlAgilityPack;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 
@@ -25,6 +26,7 @@ namespace TelegramToVCFExporter
         {
             InitializeComponent();
             worker.WorkerReportsProgress = true;
+            worker.WorkerSupportsCancellation = true;
             worker.ProgressChanged += new ProgressChangedEventHandler(worker_ProgressChanged);
             worker.DoWork += new DoWorkEventHandler(worker_DoWork);
             worker.RunWorkerCompleted += worker_RunWorkerCompleted;
@@ -92,6 +94,11 @@ namespace TelegramToVCFExporter
         private void worker_DoWork(object sender, DoWorkEventArgs e)
         {
             //TODO run all background tasks here
+            Dispatcher.Invoke(new Action((() =>
+            {
+                progressbar.Foreground = Brushes.Green;
+            })));
+
 
             HtmlAgilityPack.HtmlDocument document = new HtmlAgilityPack.HtmlDocument();
 
@@ -125,6 +132,13 @@ namespace TelegramToVCFExporter
                             .Item1,
                         contactTuples[i]
                             .Item2));
+
+            if (worker.CancellationPending == true)
+            {
+                e.Cancel = true;
+                return;
+            }
+
             Dispatcher.Invoke(new Action((() =>
             {
                 dtaGrdContacts.ItemsSource = contacts.Select(c => new
@@ -138,6 +152,12 @@ namespace TelegramToVCFExporter
             {
                 for (int i = 0; i < contacts.Count; i++)
                 {
+                    if (worker.CancellationPending == true)
+                    {
+                        e.Cancel = true;
+                        return;
+                    }
+
                     writer.Write(contacts[i].VCF);
                     writer.Write("\n");
                     worker.ReportProgress((int) (((i +1)* 1.0 / contacts.Count) * 100));
@@ -151,18 +171,23 @@ namespace TelegramToVCFExporter
             // check error, check cancel, then use result
             if (e.Error != null)
             {
-                // handle the error
+                progressbar.Foreground = Brushes.Red;
             }
             else if (e.Cancelled)
             {
-                // handle cancellation
+                progressbar.Foreground = Brushes.Yellow;
             }
             else
             {
-                // use the result(s) on the UI thread
+                
             }
 
             // general cleanup
+        }
+
+        private void btnCancel_Click(object sender, RoutedEventArgs e)
+        {
+            worker.CancelAsync();
         }
     }
 }

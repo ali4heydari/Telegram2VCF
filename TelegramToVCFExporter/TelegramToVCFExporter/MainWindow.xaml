@@ -54,8 +54,9 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <ProgressBar x:Name="progressbar" Grid.Column="0" MinHeight="30" Margin="3"></ProgressBar>
-            <Button x:Name="btnCancel" Grid.Column="1" Margin="3" Content="Cancel"></Button>
+            <ProgressBar x:Name="progressbar" Grid.Column="0" MinHeight="30" Margin="3">
+            </ProgressBar>
+            <Button x:Name="btnCancel" Grid.Column="1" Margin="3" Content="Cancel" Click="btnCancel_Click"></Button>
             <Button x:Name="btnExport" Grid.Column="2" Margin="3" Content="Export..." Click="btnExport_Click"></Button>
         </Grid>
 
