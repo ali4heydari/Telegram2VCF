@@ -25,7 +25,7 @@
             </Grid.RowDefinitions>
             <Label x:Name="lblHtml" VerticalAlignment="Center" Grid.Row="0" Content="html path:" Margin="3"></Label>
             <TextBox x:Name="tbxHtml" Grid.Row="0" Padding="0"  TextWrapping="NoWrap"  IsReadOnly="True" Grid.Column="1" Margin="3"></TextBox>
-            <Button x:Name="tbxBrowseHtml" Grid.Row="0" Grid.Column="2" Content="Browse..." Margin="3"></Button>
+            <Button x:Name="tbxBrowseHtml" Grid.Row="0" Grid.Column="2" Content="Browse..." Margin="3" Click="tbxBrowseHtml_Click"></Button>
         </Grid>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
@@ -40,7 +40,7 @@
 
             <Label x:Name="lblSavePath" Grid.Row="0" Grid.Column="0"  Content="Path to save:" Margin="3" VerticalAlignment="Center"></Label>
             <TextBox x:Name="tbxSavePath" Grid.Row="0" Grid.Column="1" Margin="3" Padding="0"  TextWrapping="NoWrap"   IsReadOnly="True" ></TextBox>
-            <Button x:Name="tbxBrowseSavePath" Grid.Row="0" Grid.Column="3" Content="Browse..." Margin="3" ></Button>
+            <Button x:Name="tbxBrowseSavePath" Grid.Row="0" Grid.Column="3" Content="Browse..." Margin="3" Click="tbxBrowseSavePath_Click" ></Button>
         </Grid>
         <Grid Margin="3" Grid.Row="2">
 
@@ -56,7 +56,7 @@
             </Grid.ColumnDefinitions>
             <ProgressBar x:Name="progressbar" Grid.Column="0" MinHeight="30" Margin="3"></ProgressBar>
             <Button x:Name="btnCancel" Grid.Column="1" Margin="3" Content="Cancel"></Button>
-            <Button x:Name="btnExport" Grid.Column="2" Margin="3" Content="Export..."></Button>
+            <Button x:Name="btnExport" Grid.Column="2" Margin="3" Content="Export..." Click="btnExport_Click"></Button>
         </Grid>
 
 
