@@ -55,7 +55,7 @@
                 <ColumnDefinition Width="3*"/>
                 <ColumnDefinition Width="3*"/>
             </Grid.ColumnDefinitions>
-            <Button x:Name="btnAbout" Grid.Column="0" Margin="3" Content="?"></Button>
+            <Button x:Name="btnAbout" Grid.Column="0" Margin="3" Content="?" Click="btnAbout_Click"></Button>
             <Grid Grid.Column="1" Margin="3">
                 <ProgressBar x:Name="progressbar" Grid.Column="0" MinHeight="30">
                 </ProgressBar>

@@ -42,6 +42,7 @@ namespace TelegramToVCFExporter
                 fileDialog.DefaultExt = "html";
                 fileDialog.InitialDirectory = $@"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}";
                 fileDialog.ShowDialog();
+                //TODO if file dose not exit tell user
                 if (File.Exists(fileDialog.FileName))
                 {
                     this.HtmlFilePath = fileDialog.FileName;
@@ -52,6 +53,7 @@ namespace TelegramToVCFExporter
 
         private void tbxBrowseSavePath_Click(object sender, RoutedEventArgs e)
         {
+            //TODO if file with same name exist tell uesr overwrite or not?
             var thread = new Thread(((() =>
             {
                 FolderBrowserDialog savePathFolderBrowserDialog = new FolderBrowserDialog();
@@ -61,9 +63,10 @@ namespace TelegramToVCFExporter
                 if (savePathFolderBrowserDialog.SelectedPath != String.Empty)
                 {
                     this.PathToSave = savePathFolderBrowserDialog.SelectedPath +
-                                      $@"\Telegram_Exported_Contacts_{DateTime.Now.Year}_{DateTime.Now.Month}_{
-                                              DateTime.Now.Day
-                                          }.vcf";
+                                      $@"\Telegram_Exported_Contacts_
+                                              {DateTime.Now.Year}_
+                                              {DateTime.Now.Month}_
+                                              {DateTime.Now.Day}.vcf";
 
                     Dispatcher.Invoke(
                         new Action(() => { tbxSavePath.Text = this.PathToSave; }));
@@ -81,24 +84,23 @@ namespace TelegramToVCFExporter
             }
             else
             {
-                //TODO implement this
-                throw new Exception("Backgrownd worker is busy");
+                //TODO tell user an other processes is running
+                throw new Exception("Background worker is busy");
             }
         }
 
         void worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            Dispatcher.Invoke(new Action((() => { progressbar.Value = e.ProgressPercentage; })));
+            Dispatcher.Invoke(new Action((() =>
+            {
+                progressbar.Value = e.ProgressPercentage;
+                lblProgressStatus.Content = $"{e.ProgressPercentage}%";
+            })));
         }
 
         private void worker_DoWork(object sender, DoWorkEventArgs e)
         {
-            //TODO run all background tasks here
-            Dispatcher.Invoke(new Action((() =>
-            {
-                progressbar.Foreground = Brushes.Green;
-            })));
-
+            Dispatcher.Invoke(new Action((() => { progressbar.Foreground = Brushes.Green; })));
 
             HtmlAgilityPack.HtmlDocument document = new HtmlAgilityPack.HtmlDocument();
 
@@ -160,7 +162,7 @@ namespace TelegramToVCFExporter
 
                     writer.Write(contacts[i].VCF);
                     writer.Write("\n");
-                    worker.ReportProgress((int) (((i +1)* 1.0 / contacts.Count) * 100));
+                    worker.ReportProgress((int) (((i + 1) * 1.0 / contacts.Count) * 100));
                 }
             }
         }
@@ -168,26 +170,31 @@ namespace TelegramToVCFExporter
         private void worker_RunWorkerCompleted(object sender,
             RunWorkerCompletedEventArgs e)
         {
-            // check error, check cancel, then use result
             if (e.Error != null)
             {
                 progressbar.Foreground = Brushes.Red;
+                lblProgressStatus.Content = $"Error: {e.Error.Message}";
             }
             else if (e.Cancelled)
             {
                 progressbar.Foreground = Brushes.Yellow;
+                lblProgressStatus.Content = $"Export canceled by user";
             }
             else
             {
-                
+                lblProgressStatus.Content = $"Export successful";
             }
-
-            // general cleanup
         }
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
+            //TODO ask user really want cancel process
             worker.CancelAsync();
+        }
+
+        private void btnAbout_Click(object sender, RoutedEventArgs e)
+        {
+            //TODO implement about and contact us
         }
     }
 }
