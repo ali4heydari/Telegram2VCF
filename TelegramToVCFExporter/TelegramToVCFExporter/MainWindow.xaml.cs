@@ -63,9 +63,10 @@ namespace TelegramToVCFExporter
                 if (savePathFolderBrowserDialog.SelectedPath != String.Empty)
                 {
                     this.PathToSave = savePathFolderBrowserDialog.SelectedPath +
-                                      $@"\Telegram_Exported_Contacts_{DateTime.Now.Year}_{DateTime.Now.Month}_{
-                                              DateTime.Now.Day
-                                          }.vcf";
+                                      $@"\Telegram_Exported_Contacts_
+                                              {DateTime.Now.Year}_
+                                              {DateTime.Now.Month}_
+                                              {DateTime.Now.Day}.vcf";
 
                     Dispatcher.Invoke(
                         new Action(() => { tbxSavePath.Text = this.PathToSave; }));
