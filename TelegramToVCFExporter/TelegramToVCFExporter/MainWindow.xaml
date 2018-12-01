@@ -24,7 +24,7 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <Label x:Name="lblHtml" VerticalAlignment="Center" Grid.Row="0" Content="html path:" Margin="3"></Label>
-            <TextBox x:Name="tbxHtml" Grid.Row="0" Padding="0"  TextWrapping="NoWrap"  IsReadOnly="True" Grid.Column="1" Margin="3"></TextBox>
+            <TextBox VerticalContentAlignment="Center" x:Name="tbxHtml" Grid.Row="0" Padding="0"  TextWrapping="NoWrap"  IsReadOnly="True" Grid.Column="1" Margin="3"></TextBox>
             <Button x:Name="tbxBrowseHtml" Grid.Row="0" Grid.Column="2" Content="Browse..." Margin="3" Click="tbxBrowseHtml_Click"></Button>
         </Grid>
         <Grid Grid.Row="1">
@@ -39,7 +39,7 @@
             </Grid.RowDefinitions>
 
             <Label x:Name="lblSavePath" Grid.Row="0" Grid.Column="0"  Content="Path to save:" Margin="3" VerticalAlignment="Center"></Label>
-            <TextBox x:Name="tbxSavePath" Grid.Row="0" Grid.Column="1" Margin="3" Padding="0"  TextWrapping="NoWrap"   IsReadOnly="True" ></TextBox>
+            <TextBox x:Name="tbxSavePath" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="1" Margin="3" Padding="0"  TextWrapping="NoWrap"   IsReadOnly="True" ></TextBox>
             <Button x:Name="tbxBrowseSavePath" Grid.Row="0" Grid.Column="3" Content="Browse..." Margin="3" Click="tbxBrowseSavePath_Click" ></Button>
         </Grid>
         <Grid Margin="3" Grid.Row="2">
@@ -50,14 +50,19 @@
         </Grid>
         <Grid Grid.Row="3">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="4*"/>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="12*"/>
+                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="3*"/>
             </Grid.ColumnDefinitions>
-            <ProgressBar x:Name="progressbar" Grid.Column="0" MinHeight="30" Margin="3">
-            </ProgressBar>
-            <Button x:Name="btnCancel" Grid.Column="1" Margin="3" Content="Cancel" Click="btnCancel_Click"></Button>
-            <Button x:Name="btnExport" Grid.Column="2" Margin="3" Content="Export..." Click="btnExport_Click"></Button>
+            <Button x:Name="btnAbout" Grid.Column="0" Margin="3" Content="?"></Button>
+            <Grid Grid.Column="1" Margin="3">
+                <ProgressBar x:Name="progressbar" Grid.Column="0" MinHeight="30">
+                </ProgressBar>
+                <Label x:Name="lblProgressStatus" HorizontalAlignment="Center" VerticalAlignment="Center"></Label>
+            </Grid>
+            <Button x:Name="btnCancel" Grid.Column="2" Margin="3" Content="Cancel" Click="btnCancel_Click"></Button>
+            <Button x:Name="btnExport" Grid.Column="3" Margin="3" Content="Export..." Click="btnExport_Click"></Button>
         </Grid>
 
 
