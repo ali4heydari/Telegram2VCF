@@ -84,8 +84,8 @@ namespace TelegramToVCFExporter
             }
             else
             {
-                //TODO tell user an other prosses is running
-                throw new Exception("Backgrownd worker is busy");
+                //TODO tell user an other processes is running
+                throw new Exception("Background worker is busy");
             }
         }
 
@@ -188,7 +188,7 @@ namespace TelegramToVCFExporter
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
-            //TODO ask user really wnt cancel prosses
+            //TODO ask user really want cancel process
             worker.CancelAsync();
         }
 
