@@ -9,6 +9,7 @@ using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Media;
 using HtmlAgilityPack;
+using MessageBox = System.Windows.Forms.MessageBox;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 
 namespace TelegramToVCFExporter
@@ -42,18 +43,21 @@ namespace TelegramToVCFExporter
                 fileDialog.DefaultExt = "html";
                 fileDialog.InitialDirectory = $@"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}";
                 fileDialog.ShowDialog();
-                //TODO if file dose not exit tell user
                 if (File.Exists(fileDialog.FileName))
                 {
                     this.HtmlFilePath = fileDialog.FileName;
                     Dispatcher.Invoke(new Action(() => { tbxHtml.Text = fileDialog.FileName; }));
+                }
+                else
+                {
+                    MessageBox.Show("File that you selected may move or removed", "File not found",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }).Start();
         }
 
         private void tbxBrowseSavePath_Click(object sender, RoutedEventArgs e)
         {
-            //TODO if file with same name exist tell uesr overwrite or not?
             var thread = new Thread(((() =>
             {
                 FolderBrowserDialog savePathFolderBrowserDialog = new FolderBrowserDialog();
@@ -62,11 +66,11 @@ namespace TelegramToVCFExporter
                 savePathFolderBrowserDialog.ShowDialog();
                 if (savePathFolderBrowserDialog.SelectedPath != String.Empty)
                 {
-                    this.PathToSave = savePathFolderBrowserDialog.SelectedPath +
-                                      $@"\Telegram_Exported_Contacts_
-                                              {DateTime.Now.Year}_
-                                              {DateTime.Now.Month}_
-                                              {DateTime.Now.Day}.vcf";
+                    string savePath = savePathFolderBrowserDialog.SelectedPath +
+                                      $@"\Telegram_Exported_Contacts_{DateTime.Now.Year}_{DateTime.Now.Month}_{
+                                              DateTime.Now.Day
+                                          }.vcf";
+                    this.PathToSave = savePath;
 
                     Dispatcher.Invoke(
                         new Action(() => { tbxSavePath.Text = this.PathToSave; }));
@@ -78,14 +82,37 @@ namespace TelegramToVCFExporter
 
         private void btnExport_Click(object sender, RoutedEventArgs e)
         {
+            if (File.Exists(this.PathToSave))
+            {
+                DialogResult dialogResult = MessageBox.Show(
+                    "An other file with same name exist on this directory would you like to overwrite it?",
+                    "Overwrite warning", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                if (dialogResult == System.Windows.Forms.DialogResult.No)
+                {
+                    this.PathToSave += "_(1)";
+                    Dispatcher.Invoke(new Action(() => { tbxBrowseSavePath.Content = this.PathToSave; }));
+                }
+                else if (dialogResult == System.Windows.Forms.DialogResult.Cancel)
+                {
+                    return;
+                }
+            }
+
             if (!worker.IsBusy)
             {
                 worker.RunWorkerAsync();
             }
             else
             {
-                //TODO tell user an other processes is running
-                throw new Exception("Background worker is busy");
+                DialogResult dialogResult = MessageBox.Show("An other process is running would you like to cancel it?",
+                    "process alter",
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+
+                if (dialogResult == System.Windows.Forms.DialogResult.Yes)
+                {
+                    worker.CancelAsync();
+                    btnExport_Click(sender, e);
+                }
             }
         }
 
@@ -188,8 +215,11 @@ namespace TelegramToVCFExporter
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
-            //TODO ask user really want cancel process
-            worker.CancelAsync();
+            DialogResult dialogResult = MessageBox.Show("Are you really want to cancel the process?", "Cancel confirm",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+            if (dialogResult == System.Windows.Forms.DialogResult.Yes)
+                worker.CancelAsync();
         }
 
         private void btnAbout_Click(object sender, RoutedEventArgs e)
