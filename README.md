@@ -23,3 +23,13 @@ Just run TelegramToVCF.exe file!
 Address contacts.html located on \Telegram Desktop\DataExport_XX_XX_XXXX\lists 
 folder and specify path to save vcf file and then click export button.
 
+## Screenshotes
+
+<p align="center">
+  <img width="100%" src="https://github.com/ali4heydari/Telegram2VCF/blob/master/screenshotes/screenshot1.png?raw=true" alt="telegram to vcf">
+</p>
+
+<p align="center">
+  <img width="100%" src="https://github.com/ali4heydari/Telegram2VCF/blob/master/screenshotes/screenshot2.png?raw=true" alt="telegram to vcf">
+</p>
+
