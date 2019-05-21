@@ -20,7 +20,11 @@ namespace TelegramToVCFExporter
     public partial class MainWindow : Window
     {
         private string HtmlFilePath { get; set; }
-        private string PathToSave { get; set; }
+
+        private string PathToSave { get; set; } =
+            Environment.GetFolderPath(Environment.SpecialFolder.Desktop) +
+            $@"\Telegram_Exported_Contacts_{DateTime.Now.Year}_{DateTime.Now.Month}_{DateTime.Now.Day}.vcf";
+
         private BackgroundWorker worker { get; set; } = new BackgroundWorker();
 
         public MainWindow()
@@ -31,6 +35,7 @@ namespace TelegramToVCFExporter
             worker.ProgressChanged += new ProgressChangedEventHandler(worker_ProgressChanged);
             worker.DoWork += new DoWorkEventHandler(worker_DoWork);
             worker.RunWorkerCompleted += worker_RunWorkerCompleted;
+            tbxSavePath.Text = PathToSave;
         }
 
         private void tbxBrowseHtml_Click(object sender, RoutedEventArgs e)
@@ -50,10 +55,15 @@ namespace TelegramToVCFExporter
                 }
                 else
                 {
-                    MessageBox.Show("File that you selected may move or removed", "File not found",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    ShowHtmlNotFoundError();
                 }
             }).Start();
+        }
+
+        private void ShowHtmlNotFoundError()
+        {
+            MessageBox.Show("File that you selected may move or removed", "File not found",
+                MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         private void tbxBrowseSavePath_Click(object sender, RoutedEventArgs e)
@@ -127,69 +137,78 @@ namespace TelegramToVCFExporter
 
         private void worker_DoWork(object sender, DoWorkEventArgs e)
         {
-            Dispatcher.Invoke(new Action((() => { progressbar.Foreground = Brushes.Green; })));
-
-            HtmlAgilityPack.HtmlDocument document = new HtmlAgilityPack.HtmlDocument();
-
-            string readAllText = File.ReadAllText(HtmlFilePath);
-
-            document.LoadHtml(readAllText);
-
-            IList<HtmlNode> bodyNodes =
-                document.QuerySelectorAll("body > div > div.page_body.list_page > div.entry_list > div > div.body");
-
-            List<Tuple<string, string>> contactTuples =
-                bodyNodes
-                    .Select(x =>
-                        new Tuple<string, string>(
-                            x.ChildNodes[3]
-                                .InnerText
-                                .Trim(),
-                            x.ChildNodes[5]
-                                .InnerText
-                                .Trim()
-                                .Replace(" ", "")))
-                    .ToList();
-
-
-            List<Contact> contacts = new List<Contact>();
-
-            for (int i = 0; i < contactTuples.Count(); i++)
-                contacts
-                    .Add(new Contact(
-                        contactTuples[i]
-                            .Item1,
-                        contactTuples[i]
-                            .Item2));
-
-            if (worker.CancellationPending == true)
+            if (HtmlFilePath == null)
             {
-                e.Cancel = true;
-                return;
+                MessageBox.Show("File that you selected may move or removed", "File not found",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                worker.CancelAsync();
             }
-
-            Dispatcher.Invoke(new Action((() =>
+            else
             {
-                dtaGrdContacts.ItemsSource = contacts.Select(c => new
-                {
-                    FirstAndLastName = c.FirstAndLastName,
-                    PhoneNumber = c.PhoneNumber,
-                }).ToList();
-            })));
+                Dispatcher.Invoke(new Action((() => { progressbar.Foreground = Brushes.Green; })));
 
-            using (StreamWriter writer = new StreamWriter(this.PathToSave))
-            {
-                for (int i = 0; i < contacts.Count; i++)
+                HtmlAgilityPack.HtmlDocument document = new HtmlAgilityPack.HtmlDocument();
+
+                string readAllText = File.ReadAllText(HtmlFilePath);
+
+                document.LoadHtml(readAllText);
+
+                IList<HtmlNode> bodyNodes =
+                    document.QuerySelectorAll("body > div > div.page_body.list_page > div.entry_list > div > div.body");
+
+                List<Tuple<string, string>> contactTuples =
+                    bodyNodes
+                        .Select(x =>
+                            new Tuple<string, string>(
+                                x.ChildNodes[3]
+                                    .InnerText
+                                    .Trim(),
+                                x.ChildNodes[5]
+                                    .InnerText
+                                    .Trim()
+                                    .Replace(" ", "")))
+                        .ToList();
+
+
+                List<Contact> contacts = new List<Contact>();
+
+                for (int i = 0; i < contactTuples.Count(); i++)
+                    contacts
+                        .Add(new Contact(
+                            contactTuples[i]
+                                .Item1,
+                            contactTuples[i]
+                                .Item2));
+
+                if (worker.CancellationPending == true)
                 {
-                    if (worker.CancellationPending == true)
+                    e.Cancel = true;
+                    return;
+                }
+
+                Dispatcher.Invoke(new Action((() =>
+                {
+                    dtaGrdContacts.ItemsSource = contacts.Select(c => new
                     {
-                        e.Cancel = true;
-                        return;
-                    }
+                        FirstAndLastName = c.FirstAndLastName,
+                        PhoneNumber = c.PhoneNumber,
+                    }).ToList();
+                })));
 
-                    writer.Write(contacts[i].VCF);
-                    writer.Write("\n");
-                    worker.ReportProgress((int) (((i + 1) * 1.0 / contacts.Count) * 100));
+                using (StreamWriter writer = new StreamWriter(this.PathToSave))
+                {
+                    for (int i = 0; i < contacts.Count; i++)
+                    {
+                        if (worker.CancellationPending == true)
+                        {
+                            e.Cancel = true;
+                            return;
+                        }
+
+                        writer.Write(contacts[i].VCF);
+                        writer.Write("\n");
+                        worker.ReportProgress((int) (((i + 1) * 1.0 / contacts.Count) * 100));
+                    }
                 }
             }
         }
@@ -224,7 +243,7 @@ namespace TelegramToVCFExporter
 
         private void btnAbout_Click(object sender, RoutedEventArgs e)
         {
-            //TODO implement about and contact us
+            //TODO implement About and Contact us
         }
     }
 }
